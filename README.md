@@ -33,8 +33,9 @@ package main
 
 import (
 	"fmt"
-	"mensaapi"
 	"time"
+
+	"github.com/tiemingo/mensaapi"
 )
 
 func main() {
