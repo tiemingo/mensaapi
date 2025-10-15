@@ -1,6 +1,9 @@
 # mensaapi
 An unofficial golang API for the Studierendenwerk Ulms Mensa meal plans.
 
+# Installation
+`go get github.com/tiemingo/mensaapi`
+
 # Available locations
     Universität Ulm
     - Mensa in der Uni Ulm
