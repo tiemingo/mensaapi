@@ -2,7 +2,6 @@ package mensaapi
 
 import (
 	"fmt"
-	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -13,27 +12,39 @@ import (
 
 // Returns the name of the tip or empty string if not found
 // Example: S -> Schwein
-func GetTipDescription(tip string) string {
-	fullTip, ok := TipsMap[tip]
-	if !ok {
+func GetTipDescription(tip string, language Language) string {
+	switch language {
+	case LANGUAGE_ENGLISH:
+		return TipsMapEn[tip]
+	case LANGUAGE_GERMAN:
+		return TipsMap[tip]
+	default:
 		return ""
 	}
-	return fullTip
 }
 
 // Returns all menu items for the given date at the specified location
-func GetDayByLocation(loc LOCATION, date time.Time) (Day, error) {
+func GetDayByLocation(loc Location, date time.Time, language Language) (Day, error) {
 
 	// calculate dates
 	dateS := ConvertDateToString(date)
 	startThisWeek := date.Add(time.Hour * 24 * time.Duration(1-int(date.Weekday())))
 	startNextWeek := startThisWeek.Add(time.Hour * 24 * 7)
 
-	body := "func=make_spl&locId=" + fmt.Sprint(loc) + "&date=" + dateS + "&lang=de&startThisWeek=" + ConvertDateToString(startThisWeek) + "&startNextWeek=" + ConvertDateToString(startNextWeek)
+	body := "func=make_spl&locId=" + fmt.Sprint(loc) + "&date=" + dateS + "&startThisWeek=" + ConvertDateToString(startThisWeek) + "&startNextWeek=" + ConvertDateToString(startNextWeek)
+
+	switch language {
+	case LANGUAGE_ENGLISH:
+		body += "&lang=en"
+	case LANGUAGE_GERMAN:
+		body += "&lang=de"
+	default:
+		return Day{}, fmt.Errorf("unsuported language")
+	}
 
 	resp, err := soup.Post("https://sw-ulm-spl51.maxmanager.xyz/inc/ajax-php_konnektor.inc.php", "application/x-www-form-urlencoded; charset=UTF-8", body)
 	if err != nil {
-		os.Exit(1)
+		return Day{}, fmt.Errorf("failed to get page: %s", err)
 	}
 
 	categories := map[string][]soup.Root{}

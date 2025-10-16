@@ -42,8 +42,8 @@ import (
 )
 
 func main() {
-	// day, err := mensaapi.GetDayByLocation(mensaapi.LOC_MENSA_UNI_ULM, mensaapi.ConvertStringToDate("2025-10-30"))
-	day, err := mensaapi.GetDayByLocation(mensaapi.LOC_MENSA_UNI_ULM, time.Now())
+	// day, err := mensaapi.GetDayByLocation(mensaapi.LOC_MENSA_UNI_ULM, mensaapi.ConvertStringToDate("2025-10-30"), mensaapi.LANGUAGE_GERMAN)
+	day, err := mensaapi.GetDayByLocation(mensaapi.LOCATION_MENSA_UNI_ULM, time.Now(), mensaapi.LANGUAGE_GERMAN)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -56,7 +56,7 @@ func main() {
 			if len(item.Additives.Tips) > 0 {
 				fmt.Print("(")
 				for _, v := range item.Additives.Tips {
-					fmt.Print(mensaapi.GetTipDescription(v), ", ")
+					fmt.Print(mensaapi.GetTipDescription(v, mensaapi.LANGUAGE_GERMAN), ", ")
 				}
 				fmt.Print(") ")
 			}
